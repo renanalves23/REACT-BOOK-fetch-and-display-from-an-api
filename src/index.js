@@ -1,10 +1,17 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import ScotchInfoBar from './ScotchInfoBar';
-import './styles.css';
+import React, { useState } from "react";
+import ReactDOM from "react-dom";
+import ScotchInfoBar from "./ScotchInfoBar";
+import "./styles.css";
 
 function App() {
-  const apiURL = 'https://www.anapioficeandfire.com/api/books?pageSize=30';
+  const [books, setBooks] = useState(null);
+  const apiURL = "https://www.anapioficeandfire.com/api/books?pageSize=30";
+
+  const fetchBooks = () => {
+    fetch(apiURL)
+      .then(resp => resp.json())
+      .then(data => setBooks(data));
+  };
 
   return (
     <div className="App">
@@ -13,7 +20,9 @@ function App() {
 
       {/* Fetch data from API */}
       <div>
-        <button className="fetch-button">Fetch Data</button>
+        <button className="fetch-button" onClick={fetchBooks}>
+          Fetch Data
+        </button>
         <br />
       </div>
 
@@ -21,17 +30,20 @@ function App() {
 
       {/* Use JSX below for each book */}
       <div className="books">
-        <div className="book">
-          <h3>Book Number</h3>
-          <h2>Book Name</h2>
+        {books &&
+          books.map((item, index) => {
+            <div className="book">
+              <h3>Book Number</h3>
+              <h2>Book Name</h2>
 
-          <div className="details">
-            <p>👨: Author/Authors</p>
-            <p>📖: Number of pages</p>
-            <p>🏘️: Book Country</p>
-            <p>⏰: Release date</p>
-          </div>
-        </div>
+              <div className="details">
+                <p>👨: Author/Authors</p>
+                <p>📖: Number of pages</p>
+                <p>🏘️: Book Country</p>
+                <p>⏰: Release date</p>
+              </div>
+            </div>;
+          })}
       </div>
 
       <ScotchInfoBar seriesNumber="7" />
@@ -39,5 +51,5 @@ function App() {
   );
 }
 
-const rootElement = document.getElementById('root');
+const rootElement = document.getElementById("root");
 ReactDOM.render(<App />, rootElement);
